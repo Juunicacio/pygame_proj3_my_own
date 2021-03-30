@@ -1,0 +1,59 @@
+____________________________________________________________
+https://opengameart.org/content/alternate-lpc-character-sprites-george
+Author: 
+sheep
+Saturday, July 21, 2012 - 11:16
+Art Type: 
+2D Art
+Tags: 
+LPCCharacterSprite
+
+License(s): 
+
+CC-BY 3.0
+
+CC-BY-SA 3.0
+
+GPL 3.0
+
+____________________________________________________________
+https://opengameart.org/content/one-more-lpc-alternate-character
+Author: 
+Radomir Dopieralski
+(Submitted by Anonymous)
+Friday, July 20, 2012 - 15:04
+Art Type: 
+2D Art
+Tags: 
+CharacterSpriteLPC
+License(s): 
+
+CC-BY-SA 3.0
+
+GPL 3.0
+
+____________________________________________________________
+https://opengameart.org/content/lpc-rat-cat-and-dog
+Author: 
+Reemax
+Saturday, March 28, 2015 - 06:25
+Art Type: 
+2D Art
+Tags: 
+32x32RPGLPCcatratdog
+License(s): 
+
+CC-BY 3.0
+
+CC-BY-SA 3.0
+
+GPL 3.0
+
+GPL 2.0
+
+____________________________________________________________
+http://michaelcummings.net/mathoms/creating-2d-animated-sprites-using-unity-4.3
+
+to get the json of the sprites
+
+https://asyed94.github.io/sprite-sheet-to-json/
