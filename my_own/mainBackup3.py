@@ -79,8 +79,6 @@ class Player(Entity):
         self.max_health = health
         self.spritesheet = Spritesheet(imageName)
         self.imageIndex = 0
-        self.player_vel = 5
-        self.animationKey = None
 
     def draw(self, window):
         # draw proper player, not rect
@@ -89,41 +87,8 @@ class Player(Entity):
     def update(self):
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]): 
-            # self.imageIndex = (self.imageIndex + 1) % 16
-            # print(self.imageIndex)
-            #self.imageIndex = 15
-            #print(self.imageIndex)
-            self.spritesheet.animation('left')
-            #self.x -= self.player_vel
-            #time.sleep(2)
-            #self.imageIndex = 1
-        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]): 
-            # self.imageIndex = (self.imageIndex + 1) % 16
-            # print(self.imageIndex)
-            self.imageIndex = 14
+            self.imageIndex = (self.imageIndex + 1) % 16
             print(self.imageIndex)
-            #self.x += self.player_vel
-            #time.sleep(2)
-            #self.imageIndex = 3
-
-        # keys = pygame.key.get_pressed()
-        # if (keys[pygame.K_a] or keys[pygame.K_LEFT]): 
-        #     # self.imageIndex = (self.imageIndex + 1) % 16
-        #     # print(self.imageIndex)
-        #     self.imageIndex = 5
-        #     print(self.imageIndex)
-        
-        # for event in pygame.event.get() :
-        #     if event.type == pygame.KEYDOWN :
-        #         if event.key == pygame.K_SPACE :
-        #         print "Space bar pressed down."
-        #         elif event.key == pygame.K_ESCAPE :
-        #         print "Escape key pressed down."
-        #     elif event.type == pygame.KEYUP :
-        #         if event.key == pygame.K_SPACE :
-        #         print "Space bar released."
-        #         elif event.key == pygame.K_ESCAPE :
-        #         print "Escape key released."
 
 
 class Cat(Animals):
@@ -185,7 +150,7 @@ def main_game_loop():
     elif character==2:
         character_image="betty.png"
 
-    catN = wanna_cat()    
+    catN = wanna_cat()
     
     # define variables for the game
     run = True

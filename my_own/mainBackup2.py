@@ -1,7 +1,6 @@
 import pygame
 import os
 from spritesheet import Spritesheet
-import time
 
 # Colors
 WHITE = (255,255,255)
@@ -15,8 +14,8 @@ WIDTH, HEIGHT = 621, 425 # +10% 621,5 , 425,7 # +20% 678 , 464,4 of the gnome_ho
 RECT_PLAYER_WIDTH, RECT_PLAYER_HEIGHT = 50, 50
 
 # Load imgs
-# MAN_PLAYER = pygame.image.load(os.path.join('assets', 'george.png'))
-# WOMAN_PLAYER = pygame.image.load(os.path.join('assets', 'betty.png'))
+MAN_PLAYER = pygame.image.load(os.path.join('assets', 'george.png'))
+WOMAN_PLAYER = pygame.image.load(os.path.join('assets', 'betty.png'))
 
 MAN_LASER = pygame.image.load(os.path.join('assets', 'pixel_laser_blue.png'))
 WOMAN_LASER = pygame.image.load(os.path.join('assets', 'pixel_laser_red.png'))
@@ -37,9 +36,6 @@ class Entity():
         self.y = y
         
     def draw(self, window):
-        pass
-
-    def update(self):
         pass
 
 class Animals(Entity): # Players or cats
@@ -63,68 +59,25 @@ class Animals(Entity): # Players or cats
 
 class Player(Entity):
     # Class variables. For the number of the player and cooldown
-    # NUMBER_MAP = {
-    #     1: (MAN_PLAYER, MAN_LASER),
-    #     2: (WOMAN_PLAYER, WOMAN_LASER)
-    # }
+    NUMBER_MAP = {
+        1: (MAN_PLAYER, MAN_LASER),
+        2: (WOMAN_PLAYER, WOMAN_LASER)
+    }
     COOLDOWN = 30 # half a second
 
-    def __init__(self, x, y, imageName, health=100):
+    def __init__(self, x, y, number, health=100):
         # Call the animals init method
         super().__init__(x, y)
+        self.img, self.laser_img = self.NUMBER_MAP[number]        
         self.lasers = []
         self.cool_down_counter = 0
         # creating a mask, allow us to do pixel perfect collision
-        #self.mask = pygame.mask.from_surface(self.img)
+        self.mask = pygame.mask.from_surface(self.img)
         self.max_health = health
-        self.spritesheet = Spritesheet(imageName)
-        self.imageIndex = 0
-        self.player_vel = 5
-        self.animationKey = None
 
     def draw(self, window):
         # draw proper player, not rect
-        window.blit(self.spritesheet.get_sprite(self.imageIndex), (self.x, self.y))
-
-    def update(self):
-        keys = pygame.key.get_pressed()
-        if (keys[pygame.K_a] or keys[pygame.K_LEFT]): 
-            # self.imageIndex = (self.imageIndex + 1) % 16
-            # print(self.imageIndex)
-            #self.imageIndex = 15
-            #print(self.imageIndex)
-            self.spritesheet.animation('left')
-            #self.x -= self.player_vel
-            #time.sleep(2)
-            #self.imageIndex = 1
-        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]): 
-            # self.imageIndex = (self.imageIndex + 1) % 16
-            # print(self.imageIndex)
-            self.imageIndex = 14
-            print(self.imageIndex)
-            #self.x += self.player_vel
-            #time.sleep(2)
-            #self.imageIndex = 3
-
-        # keys = pygame.key.get_pressed()
-        # if (keys[pygame.K_a] or keys[pygame.K_LEFT]): 
-        #     # self.imageIndex = (self.imageIndex + 1) % 16
-        #     # print(self.imageIndex)
-        #     self.imageIndex = 5
-        #     print(self.imageIndex)
-        
-        # for event in pygame.event.get() :
-        #     if event.type == pygame.KEYDOWN :
-        #         if event.key == pygame.K_SPACE :
-        #         print "Space bar pressed down."
-        #         elif event.key == pygame.K_ESCAPE :
-        #         print "Escape key pressed down."
-        #     elif event.type == pygame.KEYUP :
-        #         if event.key == pygame.K_SPACE :
-        #         print "Space bar released."
-        #         elif event.key == pygame.K_ESCAPE :
-        #         print "Escape key released."
-
+        window.blit(self.img, (self.x, self.y))
 
 class Cat(Animals):
     #  For the type of the cat
@@ -149,7 +102,7 @@ def init_window(): # set up window
     pygame.display.set_caption('My Custom Game')
     return WIN
 
-def draw_window(WIN, entities):
+def draw_window(WIN, entities, man_trainer, woman_trainer, i):
     #WIN.fill(WHITE)
     # Instead of white, give a house background
     WIN.blit(GNOME_HOUSE, (0,0))
@@ -166,60 +119,85 @@ def draw_window(WIN, entities):
 
     # -------------- TESTING DRAW SPRITESHEET --------------
     # set to wherever trainer we are at
-    # WIN.blit(man_trainer[i], (0, HEIGHT - 128))
-    # WIN.blit(woman_trainer[i], (128, HEIGHT - 128))  
+    WIN.blit(man_trainer[i], (0, HEIGHT - 128))
+    WIN.blit(woman_trainer[i], (128, HEIGHT - 128))  
 
 
     # to the drawings work, we need to update the display
     pygame.display.update()
 
-def main_game_loop():
-
-    character_image=""    
-    character = 0
-    # while character != 1 or character !=2
-    character = get_number_of_your_player()
-
-    if character==1:
-        character_image="george.png"
-    elif character==2:
-        character_image="betty.png"
-
-    catN = wanna_cat()    
-    
+def main_game_loop(character_number, cat_number):
     # define variables for the game
     run = True
-    FPS = 60
-    clock = pygame.time.Clock()
     WIN = init_window()
 
     entities = []
-    player = Player(10,10, character_image)
+    player = Player(10,10, character_number)
 
     entities.append(player)
     # kind of cat
-    if catN!=0:
-        cat = Cat(50,50, catN)
+    if cat_number!=0:
+        cat = Cat(50,50, cat_number)
         entities.append(cat)
+    
+    # -------------- BLIT SPRITESHEET --------------
+    my_spritesheet_man = Spritesheet('george')
+    # inside get_sprite we need the coordinates of our img
+    #trainer1 = my_spritesheet_man.get_sprite(0,0,48,48) # single test
+
+    # go through all the sprites of the img
+    man_trainer = [
+        my_spritesheet_man.parse_sprite("-0"), 
+        my_spritesheet_man.parse_sprite("-1"),
+        my_spritesheet_man.parse_sprite("-2"),
+        my_spritesheet_man.parse_sprite("-3"),
+        my_spritesheet_man.parse_sprite("-4"),
+        my_spritesheet_man.parse_sprite("-5"),
+        my_spritesheet_man.parse_sprite("-6"),
+        my_spritesheet_man.parse_sprite("-7"),
+        my_spritesheet_man.parse_sprite("-8"),
+        my_spritesheet_man.parse_sprite("-9"),
+        my_spritesheet_man.parse_sprite("-10"),
+        my_spritesheet_man.parse_sprite("-11"),
+        my_spritesheet_man.parse_sprite("-12"),
+        my_spritesheet_man.parse_sprite("-13"),
+        my_spritesheet_man.parse_sprite("-14"),
+        my_spritesheet_man.parse_sprite("-15"),
+    ]
+
+    my_spritesheet_woman = Spritesheet('betty')
+    woman_trainer = [
+        my_spritesheet_woman.parse_sprite("-0"), 
+        my_spritesheet_woman.parse_sprite("-1"),
+        my_spritesheet_woman.parse_sprite("-2"),
+        my_spritesheet_woman.parse_sprite("-3"),
+        my_spritesheet_woman.parse_sprite("-4"),
+        my_spritesheet_woman.parse_sprite("-5"),
+        my_spritesheet_woman.parse_sprite("-6"),
+        my_spritesheet_woman.parse_sprite("-7"),
+        my_spritesheet_woman.parse_sprite("-8"),
+        my_spritesheet_woman.parse_sprite("-9"),
+        my_spritesheet_woman.parse_sprite("-10"),
+        my_spritesheet_woman.parse_sprite("-11"),
+        my_spritesheet_woman.parse_sprite("-12"),
+        my_spritesheet_woman.parse_sprite("-13"),
+        my_spritesheet_woman.parse_sprite("-14"),
+        my_spritesheet_woman.parse_sprite("-15"),
+    ]
+    i = 0 # then go to event to reassign index
 
     while run:
-        clock.tick(FPS)
-
+        draw_window(WIN, entities, man_trainer, woman_trainer, i)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            # if event.type == pygame.KEYDOWN:
-            #     # update sprite if space is pressed
-            #     if event.key == pygame.K_SPACE:
-            #         pass
-            #         # reassign index value
-            #         # then go to draw
-
-        for e in entities:
-            e.update()
-
-        draw_window(WIN, entities)
+            if event.type == pygame.KEYDOWN:
+                # update sprite if space is pressed
+                if event.key == pygame.K_SPACE:
+                    # reassign index value
+                    i = (i + 1) % len(man_trainer)
+                    # then go to draw
 
     pygame.quit()
 
@@ -283,5 +261,8 @@ def wanna_cat():
         
 
 if __name__ == '__main__':
-    main_game_loop()
+    character = get_number_of_your_player()
+    cat = wanna_cat()
+    print(cat)
+    main_game_loop(character, cat)
         
